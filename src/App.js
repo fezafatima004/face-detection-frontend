@@ -12,7 +12,7 @@ import './App.css';
 
 //You must add your own API key here from Clarifai.
 const app = new Clarifai.App({
- apiKey: 'YOUR API KEY HERE'
+ apiKey: 'ba083bdc3ca94b9c9cc6826e77b3c8af'
 });
 
 const particlesOptions = {
@@ -27,6 +27,21 @@ const particlesOptions = {
   }
 }
 
+
+const initialState = {
+      input: '',
+      imageUrl: '',
+      box: {},
+      route: 'signin',
+      isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      }
+}
 class App extends Component {
   constructor() {
     super();
@@ -46,8 +61,12 @@ class App extends Component {
     }
   }
 
+  
+  
   loadUser = (data) => {
+    
     this.setState({user: {
+      
       id: data.id,
       name: data.name,
       email: data.email,
@@ -95,7 +114,7 @@ class App extends Component {
       .then(response => {
         console.log('hi', response)
         if (response) {
-          fetch('http://localhost:3000/image', {
+          fetch('https://fierce-badlands-88924.herokuapp.com/image', {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -106,16 +125,17 @@ class App extends Component {
             .then(count => {
               this.setState(Object.assign(this.state.user, { entries: count}))
             })
-
+            .catch(console.log);
         }
         this.displayFaceBox(this.calculateFaceLocation(response))
       })
       .catch(err => console.log(err));
   }
 
+
   onRouteChange = (route) => {
     if (route === 'signout') {
-      this.setState({isSignedIn: false})
+      this.setState(initialState)
     } else if (route === 'home') {
       this.setState({isSignedIn: true})
     }
